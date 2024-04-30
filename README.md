@@ -2,7 +2,9 @@
 
 This is a one-liner **SolXen** Miner for Solana Devnet (only been tested on my Ubuntu machine). 
 
-Please feel free to test it on Mac or other platforms and submit the necessary fixes.
+Note: You'll need to clone this repo and update the 'keypair_path' in solxen.py to reflect your computer's path.
+
+Feel free to test it on Mac or other platforms and submit the necessary fixes.
 
 
 ## Usage
