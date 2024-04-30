@@ -2,11 +2,12 @@
 
 This is a test of the Python one-liner **SolXen** miner for Ubuntu and has only been tested on my machine. 
 
-Please feel free to test it on Mac or other platforms and submit necessary fixes.
+Please feel free to test it on Mac or other platforms and submit the necessary fixes.
 
 
 ## Usage
-Running it is as simple as executing this one-liner on your Ubuntu machine, just add your Ethereum address at the end:
+Running it is as simple as executing this one-liner on your Ubuntu machine.
+Just don't forget to add your Ethereum address at the end of the command:
 
 
 ```curl -s https://raw.githubusercontent.com/JozefJarosciak/SolXen-python/master/solxen.py | python3 - <YOUR_ETHEREUM_ADDRESS>```
