@@ -1,12 +1,12 @@
-# Mine SolXen on Solana Testnet (python one-liner)
+# Mine SolXen on Solana Devnet (python one-liner)
 
-This is a test of the Python one-liner **SolXen** miner for Ubuntu and has only been tested on my machine. 
+This is a one-liner **SolXen** Miner for Solana Devnet (only been tested on my Ubuntu machine). 
 
 Please feel free to test it on Mac or other platforms and submit the necessary fixes.
 
 
 ## Usage
-Running it is as simple as executing this one-liner on your Ubuntu machine.
+Running it is as simple as executing this one-liner on your machine.
 Just don't forget to add your Ethereum address at the end of the command:
 
 
