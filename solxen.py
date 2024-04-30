@@ -18,13 +18,17 @@ def create_or_verify_wallet():
     if os.path.exists(keypair_path):
         result = subprocess.run(['solana', 'balance', keypair_path, '--url', 'https://api.devnet.solana.com'], capture_output=True, text=True)
         balance_output = result.stdout.strip()
-        # Extract numeric balance from output like "1 SOL"
-        balance = float(balance_output.split()[0])  # Split the string and convert the first part to float
-        if balance >= min_balance:
-            print(f"Existing wallet has sufficient balance: {balance} SOL")
-            return keypair_path
+        # Attempt to extract and convert the numeric balance from the output
+        try:
+            # Assume balance is formatted like "1.0 SOL"
+            balance = float(balance_output.split()[0])  # Split the string and convert the first part to float
+            if balance >= min_balance:
+                print(f"Existing wallet has sufficient balance: {balance} SOL")
+                return keypair_path
+        except (IndexError, ValueError):
+            print("Failed to parse balance. Proceeding with new wallet creation.")
 
-    # If balance is insufficient or wallet does not exist, create a new wallet
+    # If balance is insufficient or wallet does not exist, or parsing failed
     print("Creating new wallet or existing wallet has insufficient balance.")
     subprocess.run(['solana-keygen', 'new', '--outfile', keypair_path], check=True)
     subprocess.run(['solana', 'airdrop', '1', keypair_path, '--url', 'https://api.devnet.solana.com'], check=True)
