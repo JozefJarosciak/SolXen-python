@@ -2,14 +2,14 @@
 
 This is a one-liner **SolXen** Miner for Solana Devnet (only been tested on my Ubuntu machine). 
 
-Note: You'll need to clone this repo and update the 'keypair_path' in solxen.py to reflect your computer's path.
-
 Feel free to test it on Mac or other platforms and submit the necessary fixes.
 
 
 ## Usage
-Running it is as simple as executing this one-liner on your machine.
-Just don't forget to add your Ethereum address at the end of the command:
+
+Running it is as simple as executing this one-liner on your machine. Just don't forget to add your Ethereum address at the end of the command.
+
+Note: You'll need to clone this repo and update the 'keypair_path' in solxen.py to reflect your computer's path, and then curl to your address in the command below.
 
 
 ```curl -s https://raw.githubusercontent.com/JozefJarosciak/SolXen-python/master/solxen.py | python3 - <YOUR_ETHEREUM_ADDRESS>```
