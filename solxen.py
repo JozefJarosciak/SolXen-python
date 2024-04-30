@@ -18,48 +18,47 @@ def create_or_verify_wallet():
     if os.path.exists(keypair_path):
         result = subprocess.run(['solana', 'balance', keypair_path, '--url', 'https://api.devnet.solana.com'], capture_output=True, text=True)
         balance_output = result.stdout.strip()
-        # Attempt to extract and convert the numeric balance from the output
         try:
-            balance = float(balance_output.split()[0])  # Split the string and convert the first part to float
+            balance = float(balance_output.split()[0])  # Extract the numeric balance
             if balance >= min_balance:
                 print(f"Existing wallet has sufficient balance: {balance} SOL")
                 return keypair_path
         except (IndexError, ValueError):
             print("Failed to parse balance. Proceeding with new wallet creation.")
 
-    # If balance is insufficient or wallet does not exist, or parsing failed
     print("Creating new wallet or existing wallet has insufficient balance.")
     subprocess.run(['solana-keygen', 'new', '--outfile', keypair_path], check=True)
     subprocess.run(['solana', 'airdrop', '1', keypair_path, '--url', 'https://api.devnet.solana.com'], check=True)
     return keypair_path
 
-def setup_solana_client(eth_address, keypair_path):
-    """Setup Solana client environment and execute commands"""
-    project_dir = 'solana_rust_client'
+def run_command(command):
+    """Run a command through subprocess and print the output."""
+    print("Running command:", ' '.join(command))
+    result = subprocess.run(command, capture_output=True, text=True)
+    if result.returncode != 0:
+        print("Error:", result.stderr)
+        raise subprocess.CalledProcessError(result.returncode, command)
+    print("Output:", result.stdout)
+    return result.stdout
 
-    # Clear existing and create new directory
+def setup_solana_client(eth_address, keypair_path):
+    project_dir = 'solana_rust_client'
     if os.path.exists(project_dir):
         subprocess.run(["rm", "-rf", project_dir], check=True)
     os.makedirs(project_dir)
     os.chdir(project_dir)
 
-    # Initialize a new binary crate directly
     subprocess.run(["cargo", "init", "--bin"], check=True)
-
-    # Download necessary files
-    download_file("https://gist.githubusercontent.com/jacklevin74/a669ab619946ed0fde522376cb9948cd/raw/d127e709cb4142530b4ce9aea4d52f4c455fca91/Cargo.toml", "Cargo.toml")
-    download_file("https://gist.githubusercontent.com/jacklevin74/a073004c120f45e32d84d8530d613218/raw/fde1c0fe4f77a85324c324366d2b8a85a47eb14d/client.js", "src/main.rs")
-
-    # Build the project
-    subprocess.run(["cargo", "build"], check=True)
+    # Assuming downloading and file setup is correct here
+    run_command(["cargo", "build"])
 
     # Configure Solana CLI correctly
-    subprocess.run(["solana", "config", "set", "--url", "https://api.devnet.solana.com"], check=True)
-    subprocess.run(["solana", "config", "set", "--keypair", keypair_path], check=True)
+    run_command(["solana", "config", "set", "--url", "https://api.devnet.solana.com"])
+    run_command(["solana", "config", "set", "--keypair", keypair_path])
 
     # Execute the program in a loop
     while True:
-        subprocess.run(["./target/debug/solana_rust_client", "--fee", "5000", "--address", eth_address], check=True)
+        run_command(["./target/debug/solana_rust_client", "--fee", "5000", "--address", eth_address])
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
