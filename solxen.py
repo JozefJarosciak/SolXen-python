@@ -62,18 +62,17 @@ def update_cargo_toml():
         print("Failed to download the Cargo.toml file")
         sys.exit(1)
 
-
 def setup_solana_client(eth_address, keypair_path):
     project_dir = 'solana_rust_client'
     if os.path.exists(project_dir):
         subprocess.run(["rm", "-rf", project_dir], check=True)
     os.makedirs(project_dir)
-    os.chdir(project_dir)
+    os.chdir(project_dir)  # Change into the project directory
 
     subprocess.run(["cargo", "init", "--bin"], check=True)
-    update_cargo_toml()  # Update the Cargo.toml immediately after initialization
+    update_cargo_toml()  # Ensure this runs in the project directory
     download_and_prepare_rust_source()  # This is called after initializing the Rust project
-    subprocess.run(["cargo", "build"], check=True)
+    subprocess.run(["cargo", "build"], check=True)  # Build the project
 
     # Configure Solana CLI
     subprocess.run(["solana", "config", "set", "--url", "https://api.devnet.solana.com"], check=True)
@@ -82,7 +81,6 @@ def setup_solana_client(eth_address, keypair_path):
     # Execute the program in a loop
     while True:
         subprocess.run(["./target/debug/solana_rust_client", "--fee", "5000", "--address", eth_address], check=True)
-
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
