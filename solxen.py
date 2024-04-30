@@ -20,7 +20,6 @@ def create_or_verify_wallet():
         balance_output = result.stdout.strip()
         # Attempt to extract and convert the numeric balance from the output
         try:
-            # Assume balance is formatted like "1.0 SOL"
             balance = float(balance_output.split()[0])  # Split the string and convert the first part to float
             if balance >= min_balance:
                 print(f"Existing wallet has sufficient balance: {balance} SOL")
@@ -54,9 +53,9 @@ def setup_solana_client(eth_address, keypair_path):
     # Build the project
     subprocess.run(["cargo", "build"], check=True)
 
-    # Configure Solana CLI
+    # Configure Solana CLI correctly
     subprocess.run(["solana", "config", "set", "--url", "https://api.devnet.solana.com"], check=True)
-    subprocess.run(["solana", "config", "set", "keypair", keypair_path], check=True)
+    subprocess.run(["solana", "config", "set", "--keypair", keypair_path], check=True)
 
     # Execute the program in a loop
     while True:
