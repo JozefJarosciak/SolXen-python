@@ -12,12 +12,14 @@ def download_file(url, filename):
 def create_or_verify_wallet():
     """Create a new Solana wallet or verify existing wallet's balance"""
     keypair_path = '/home/jozef/.config/solana/id.json'
-    min_balance = 1  # Minimum balance in SOL required to skip creating a new wallet
+    min_balance = 1.0  # Minimum balance in SOL required to skip creating a new wallet
 
     # Check if the keypair file exists and get balance
     if os.path.exists(keypair_path):
-        result = subprocess.run(['solana', 'balance', '--url', 'https://api.devnet.solana.com'], capture_output=True, text=True)
-        balance = float(result.stdout.strip())
+        result = subprocess.run(['solana', 'balance', keypair_path, '--url', 'https://api.devnet.solana.com'], capture_output=True, text=True)
+        balance_output = result.stdout.strip()
+        # Extract numeric balance from output like "1 SOL"
+        balance = float(balance_output.split()[0])  # Split the string and convert the first part to float
         if balance >= min_balance:
             print(f"Existing wallet has sufficient balance: {balance} SOL")
             return keypair_path
@@ -25,7 +27,7 @@ def create_or_verify_wallet():
     # If balance is insufficient or wallet does not exist, create a new wallet
     print("Creating new wallet or existing wallet has insufficient balance.")
     subprocess.run(['solana-keygen', 'new', '--outfile', keypair_path], check=True)
-    subprocess.run(['solana', 'airdrop', '1', '--url', 'https://api.devnet.solana.com'], check=True)
+    subprocess.run(['solana', 'airdrop', '1', keypair_path, '--url', 'https://api.devnet.solana.com'], check=True)
     return keypair_path
 
 def setup_solana_client(eth_address, keypair_path):
