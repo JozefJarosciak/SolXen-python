@@ -10,3 +10,7 @@ Running it is as simple as executing this one-liner on your Ubuntu machine, just
 
 
 ```curl -s https://raw.githubusercontent.com/JozefJarosciak/SolXen-python/master/solxen.py | python3 - <YOUR_ETHEREUM_ADDRESS>```
+
+
+## Video Demo:
+https://youtu.be/IourGFCEjKU
