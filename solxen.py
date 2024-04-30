@@ -51,6 +51,18 @@ def download_and_prepare_rust_source():
     with open('src/main.rs', 'w') as f:  # Ensure this is the correct path within your Rust project
         f.write(modified_rust_code)
 
+def update_cargo_toml():
+    """Download and replace the Cargo.toml file from a given URL."""
+    cargo_url = "https://gist.githubusercontent.com/jacklevin74/a669ab619946ed0fde522376cb9948cd/raw/d127e709cb4142530b4ce9aea4d52f4c455fca91/Cargo.toml"
+    response = requests.get(cargo_url)
+    if response.status_code == 200:
+        with open('Cargo.toml', 'w') as file:
+            file.write(response.text)
+    else:
+        print("Failed to download the Cargo.toml file")
+        sys.exit(1)
+
+
 def setup_solana_client(eth_address, keypair_path):
     project_dir = 'solana_rust_client'
     if os.path.exists(project_dir):
@@ -59,6 +71,7 @@ def setup_solana_client(eth_address, keypair_path):
     os.chdir(project_dir)
 
     subprocess.run(["cargo", "init", "--bin"], check=True)
+    update_cargo_toml()  # Update the Cargo.toml immediately after initialization
     download_and_prepare_rust_source()  # This is called after initializing the Rust project
     subprocess.run(["cargo", "build"], check=True)
 
