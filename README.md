@@ -1,8 +1,8 @@
 # Mine SolXen on Solana Testnet (python one-liner)
 
-This is a test of the Python one-liner **SolXen** miner for Ubuntu. 
+This is a test of the Python one-liner **SolXen** miner for Ubuntu and has only been tested on my machine. 
 
-The script hasn't been tested elsewhere, so please amend it to run on Mac or other platforms.
+Please feel free to test it on Mac or other platforms and submit necessary fixes.
 
 
 ## Usage
