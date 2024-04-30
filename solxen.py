@@ -41,6 +41,16 @@ def run_command(command):
     print("Output:", result.stdout)
     return result.stdout
 
+def download_and_prepare_rust_source():
+    """Download the Rust client file and modify it to use the correct keypair path."""
+    url = "https://gist.githubusercontent.com/jacklevin74/a073004c120f45e32d84d8530d613218/raw/fde1c0fe4f77a85324c324366d2b8a85a47eb14d/client.js"
+    keypair_path = os.path.expanduser('~/.config/solana/id.json')  # Generic way to get home directory
+    response = requests.get(url)
+    rust_code = response.text
+    modified_rust_code = rust_code.replace('/home/ubuntu/.config/solana/id.json', keypair_path)
+    with open('src/main.rs', 'w') as f:  # Ensure this is the correct path within your Rust project
+        f.write(modified_rust_code)
+
 def setup_solana_client(eth_address, keypair_path):
     project_dir = 'solana_rust_client'
     if os.path.exists(project_dir):
@@ -49,16 +59,17 @@ def setup_solana_client(eth_address, keypair_path):
     os.chdir(project_dir)
 
     subprocess.run(["cargo", "init", "--bin"], check=True)
-    # Assuming downloading and file setup is correct here
-    run_command(["cargo", "build"])
+    download_and_prepare_rust_source()  # This is called after initializing the Rust project
+    subprocess.run(["cargo", "build"], check=True)
 
-    # Configure Solana CLI correctly
-    run_command(["solana", "config", "set", "--url", "https://api.devnet.solana.com"])
-    run_command(["solana", "config", "set", "--keypair", keypair_path])
+    # Configure Solana CLI
+    subprocess.run(["solana", "config", "set", "--url", "https://api.devnet.solana.com"], check=True)
+    subprocess.run(["solana", "config", "set", "--keypair", keypair_path], check=True)
 
     # Execute the program in a loop
     while True:
-        run_command(["./target/debug/solana_rust_client", "--fee", "5000", "--address", eth_address])
+        subprocess.run(["./target/debug/solana_rust_client", "--fee", "5000", "--address", eth_address], check=True)
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
